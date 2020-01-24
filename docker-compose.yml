@@ -1,0 +1,18 @@
+#*********************************************************************
+#   Copyright 2019 Regents of the University of California
+#   All rights reserved
+#*********************************************************************
+version: '3.7'
+services:
+  my-s3-tester:
+    container_name: my-s3-tester
+    image: terrywbrady/my-s3-tester
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+    - type: bind
+      source: ./service.ini
+      target: /app/service.ini
+    stdin_open: true
+    tty: true

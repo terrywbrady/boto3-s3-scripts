@@ -1,8 +1,20 @@
+[driver]
+storage=minio
+test-filename=s3.py
+default-count=15
+prefix=test-prefix
+# this is a secondary verification of deletable object prefixes
+deletable-prefix=test-prefix
+
+[redis]
+host=localhost
+port=6379
+
 [minio]
-bucket=minio-ucket-name
+bucket=minio-bucket-name
 endpointUrl=u
 accessKey=a
 secretKey=b
 
 [s3]
-bucket=s3-ucket-name
+bucket=s3-bucket-name
