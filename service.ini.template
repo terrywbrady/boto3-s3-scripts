@@ -1,0 +1,8 @@
+[minio]
+bucket=minio-ucket-name
+endpointUrl=u
+accessKey=a
+secretKey=b
+
+[s3]
+bucket=s3-ucket-name
