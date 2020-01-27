@@ -19,7 +19,7 @@ if (runDelete):
 
 
 while True:
-    sleep(random.random())
+    #sleep(random.random())
     k = myS3Tester.dequeue()
     if k:
         try:
