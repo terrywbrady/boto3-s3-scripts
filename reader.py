@@ -21,7 +21,7 @@ if (runDelete):
 while True:
     #sleep(random.random())
     k = myS3Tester.dequeue()
-    if k:
+    if (k != None):
         try:
             obj = myS3Tester.s3cli.get_object(Bucket=myS3Tester.bucketName, Key=k)
             myS3Tester.s3cli.download_file(myS3Tester.bucketName, k, "/tmp/"+k)

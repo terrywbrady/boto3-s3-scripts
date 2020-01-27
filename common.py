@@ -6,6 +6,8 @@ import sys
 import glob
 import os
 import redis
+from threading import Lock
+
 
 class MyS3Tester:
     def __init__(self):
@@ -19,7 +21,8 @@ class MyS3Tester:
         self.storage = self.getStorageService()
         self.s3cli = self.getClient(self.storage)
         self.bucketName = self.getBucket(self.storage)
-        # os.mkdir("/tmp/" + self.getPrefix())
+        self.lock = Lock()
+
         os.makedirs("/tmp/" + self.getPrefix(), exist_ok=True)
 
     def getConfigIntVal(self, section, key, defval):
@@ -97,14 +100,15 @@ class MyS3Tester:
         self.updateMetadata(key, "foo", "bar")
 
     def enqueue(self, key):
-        self.queue.set(key,1)
+        self.queue.lpush("queue", key)
         print("Creating " + key)
 
     def dequeue(self):
-        for k in self.queue.keys():
-            self.queue.delete(k)
-            #return k
-            return k.decode("utf-8")
+        with self.lock:
+            k = self.queue.rpop("queue")
+            if k:
+                return k.decode("utf-8")
+        return None
 
     def listObjects(self, prefix, maxObj):
         if (maxObj == 0):
