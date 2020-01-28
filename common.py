@@ -7,7 +7,7 @@ import glob
 import os
 import redis
 from threading import Lock
-
+from botocore.config import Config
 
 class MyS3Tester:
     def __init__(self):
@@ -65,19 +65,24 @@ class MyS3Tester:
         return False
 
     def getClient(self, storage):
-        if (storage == "minio"):
-            return boto3.client('s3',
-                aws_access_key_id=self.config.get(storage, "accessKey"),
-                aws_secret_access_key=self.config.get(storage, "secretKey"),
-                endpoint_url=self.config.get(storage, "endpointUrl")
+        #opts = {'retries': {'max_attempts': 1}}
+        opts = {'config': Config(
+            retries = dict(
+                max_attempts = 1
             )
-        return boto3.client('s3')
+        )}
+        if (storage == "minio"):
+            opts['aws_access_key_id']=self.config.get(storage, "accessKey")
+            opts['aws_secret_access_key']=self.config.get(storage, "secretKey")
+            opts['endpoint_url']=self.config.get(storage, "endpointUrl")
+        cli = boto3.client('s3', **opts)
+        return cli
 
     def getBucket(self, storage):
         return self.getConfigVal(storage, "bucket", "test-bucket")
 
     def updateMetadata(self, key, mk, mv):
-        obj = self.s3cli.get_object(Bucket=self.bucketName, Key=key)
+        #obj = self.s3cli.get_object(Bucket=self.bucketName, Key=key)
         objhead = self.s3cli.head_object(Bucket = self.bucketName, Key = key)
         m = objhead["Metadata"]
         m[mk] = mv
