@@ -3,7 +3,7 @@
 ## Setup
 - Clone code
 - Run Redis (in Docker) on an accessible host (to your client apps)
-  - `docker run -p 6379:6379 -d --name redis redis`
+  - `docker run -p 6379:6379 --rm -d --name redis redis`
   - Alternative
     - `docker-compose -f redis.yml up -d`
 - Copy service.ini.template to service.ini
