@@ -21,12 +21,16 @@ class MyS3Tester:
         self.storage = self.getStorageService()
         self.s3cli = self.getClient(self.storage)
         self.bucketName = self.getBucket(self.storage)
+        self.sleepFactor = self.getConfigFloatVal("driver", "sleep-factor", .1)
         self.lock = Lock()
 
         os.makedirs("/tmp/" + self.getPrefix(), exist_ok=True)
 
     def getConfigIntVal(self, section, key, defval):
         return int(self.getConfigVal(section, key, defval))
+
+    def getConfigFloatVal(self, section, key, defval):
+        return float(self.getConfigVal(section, key, defval))
 
     def getConfigVal(self, section, key, defval):
         v = self.config.get(section, key)
@@ -125,3 +129,7 @@ class MyS3Tester:
                 key=lobj['Key']
                 obj = self.s3cli.get_object(Bucket=self.bucketName, Key=key)
                 print(key + " --> " + str(obj['Metadata']))
+
+    def randomPause(self):
+        if (self.sleepFactor > 0):
+            sleep(random.random() * self.sleepFactor)
