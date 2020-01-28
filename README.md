@@ -6,6 +6,8 @@
   - `docker run -p 6379:6379 --rm -d --name redis redis`
   - Alternative
     - `docker-compose -f redis.yml up -d`
+- Create a file **test.txt**.  Make this file whatever size you want to test.
+  - `echo 'This is a test' > test.txt`
 - Copy service.ini.template to service.ini
   - Configure credentials
   - Configure host and port to access Redis
@@ -19,8 +21,8 @@
 
 ## Run code in 2 terminals or on 2 hosts
 - Load Content
-  - `docker-compose run my-s3-tester python s3.py 20`
+  - `docker-compose run --rm my-s3-tester python s3.py 20`
 - Read Content
-  - `docker-compose run my-s3-tester python reader.py`
+  - `docker-compose run --rm my-s3-tester python reader.py`
 - Clean up Content
-  - `docker-compose run my-s3-tester python reader.py delete 20`
+  - `docker-compose run --rm my-s3-tester python reader.py delete 20`

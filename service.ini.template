@@ -1,6 +1,6 @@
 [driver]
 storage=minio
-test-filename=s3.py
+test-filename=test.txt
 default-count=15
 prefix=test-prefix
 # this is a secondary verification of deletable object prefixes

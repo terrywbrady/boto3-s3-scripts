@@ -14,5 +14,8 @@ services:
     - type: bind
       source: ./service.ini
       target: /app/service.ini
+    - type: bind
+      source: ./test.txt
+      target: /app/test.txt
     stdin_open: true
     tty: true
