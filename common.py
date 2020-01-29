@@ -65,12 +65,12 @@ class MyS3Tester:
         return False
 
     def getClient(self, storage):
-        #opts = {'retries': {'max_attempts': 1}}
         opts = {'config': Config(
             retries = dict(
                 max_attempts = 1
             )
         )}
+        #opts = {}
         if (storage == "minio"):
             opts['aws_access_key_id']=self.config.get(storage, "accessKey")
             opts['aws_secret_access_key']=self.config.get(storage, "secretKey")
@@ -138,3 +138,24 @@ class MyS3Tester:
     def randomPause(self):
         if (self.sleepFactor > 0):
             sleep(random.random() * self.sleepFactor)
+
+    def download(self, k):
+        osize = -1
+        try:
+            obj = self.s3cli.get_object(Bucket=self.bucketName, Key=k)
+            status = obj['ResponseMetadata']['HTTPStatusCode']
+            pre = "   " if (status == 200) else " * "
+            print(pre + str(status) + " " + k + " --> " + str(obj['Metadata']))
+            osize = obj['ContentLength']
+        except Exception as e:
+            print(" *** Object Retrieval error for " + k)
+            print(e)
+            return
+        try:
+            fname = "/tmp/" + k
+            self.s3cli.download_file(self.bucketName, k, fname)
+            if (osize != os.path.getsize(fname)):
+              print(" * File size mismatch for " + fname)
+        except Exception as e:
+            print(" *** Download error for " + k)
+            print(e)

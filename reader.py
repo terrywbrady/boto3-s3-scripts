@@ -5,7 +5,8 @@ from time import sleep
 
 myS3Tester = MyS3Tester()
 
-runDelete = (myS3Tester.getArgv(1, "") == 'delete')
+param = myS3Tester.getArgv(1, "")
+runDelete = (param == 'delete')
 
 if (runDelete):
     for i in range(myS3Tester.getCount(2)):
@@ -17,14 +18,14 @@ if (runDelete):
             # print res['ResponseMetadata']['HTTPStatusCode']
     exit()
 
-
-while True:
-    myS3Tester.randomPause()
-    k = myS3Tester.dequeue()
-    if (k != None):
-        try:
-            obj = myS3Tester.s3cli.get_object(Bucket=myS3Tester.bucketName, Key=k)
-            myS3Tester.s3cli.download_file(myS3Tester.bucketName, k, "/tmp/"+k)
-            print(k + " --> " + str(obj['Metadata']))
-        except:
-            print(" *** Download error for " + k)
+if (param != ""):
+    myS3Tester.download(param)
+else:
+    try:
+        while True:
+            myS3Tester.randomPause()
+            k = myS3Tester.dequeue()
+            if (k != None):
+                myS3Tester.download(k)
+    except KeyboardInterrupt as e:
+        print(" *** User interrupt, ending read")
